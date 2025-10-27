@@ -6,12 +6,11 @@ header('Access-Control-Allow-Origin: *');
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Configurações da base de dados - XAMPP
 $host = "localhost";
 $utilizador = "root";
 $senha = "";
 $dbname = "easypark";
-$id_parque = 1;  // ID do parque a consultar
+$id_parque = 1;  
 
 try {
     // Conectar usando PDO (não mysqli!)

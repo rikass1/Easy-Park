@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyPark - Sugestões</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            min-height: 100vh;
+            color: #003366;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 60px;
+            color: white;
+            animation: slideDown 0.8s ease;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo::before {
+            content: "🚧";
+            font-size: 32px;
+        }
+
+        nav {
+            display: flex;
+            gap: 30px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        nav a:hover {
+            transform: translateY(-2px);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: width 0.3s;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .form-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 50px 20px;
+            animation: fadeIn 1s ease;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px 50px;
+            width: 100%;
+            max-width: 600px;
+            animation: slideUp 1s ease;
+        }
+
+        .form-container h1 {
+            color: #1e3a8a;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .form-container p {
+            text-align: center;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #1e3a8a;
+        }
+
+        input[type="radio"],
+        input[type="checkbox"] {
+            accent-color: #1e3a8a;
+            margin-right: 8px;
+        }
+
+        textarea {
+            width: 100%;
+            border: 1px solid #99ccff;
+            border-radius: 12px;
+            padding: 12px;
+            font-size: 1rem;
+            resize: none;
+            margin-top: 8px;
+        }
+
+        textarea:focus {
+            border-color: #3b82f6;
+            outline: none;
+            box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+        }
+
+        input[type="submit"],
+        input[type="reset"],
+        button.voltar {
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        input[type="reset"],
+        button.voltar {
+            background: white;
+            color: #1e3a8a;
+            border: 2px solid #1e3a8a;
+        }
+
+        input[type="submit"]:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        input[type="reset"]:hover,
+        button.voltar:hover {
+            background: #e6f0ff;
+            transform: translateY(-3px);
+        }
+
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .form-container {
+                padding: 30px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">EasyPark</div>
+        <nav>
+            <a href="../index.html">Início</a>
+            <a href="#">Sugestões</a>
+            <a href="#login">Login</a>
+        </nav>
+    </header>
+
+    <section class="form-section">
+        <div class="form-container">
+            <h1>Formulário de Sugestões</h1>
+            <p>Ajude-nos a melhorar o projeto da cancela do parque de estacionamento deixando as suas sugestões abaixo.</p>
+
+            <form action="sugestoes.php" method="get">
+                <label for="avaliacao">Como avalia o projeto da cancela?</label><br><br>
+
+                <input type="radio" id="excelente" name="avaliacao" value="excelente">
+                <label for="excelente">Excelente</label><br>
+                <input type="radio" id="muitoBom" name="avaliacao" value="muitoBom">
+                <label for="muitoBom">Muito Bom</label><br>
+                <input type="radio" id="bom" name="avaliacao" value="bom">
+                <label for="bom">Bom</label><br>
+                <input type="radio" id="fraco" name="avaliacao" value="fraco">
+                <label for="fraco">Fraco</label><br><br>
+
+                <label for="sugestao">Sugestões ou comentários:</label>
+                <textarea id="sugestao" name="sugestao" rows="5" placeholder="Escreva aqui a sua sugestão..." required></textarea><br><br>
+
+                <div class="buttons">
+                    <input type="submit" value="Enviar">
+                    <input type="reset" value="Limpar">
+                    <button type="button" class="voltar" onclick="history.back()">Voltar</button>
+                </div>
+            </form>
+        </div>
+    </section>
+</body>
+</html>
