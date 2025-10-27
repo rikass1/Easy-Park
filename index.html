@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyPark - Sistema de Cancela Inteligente</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            animation: slideDown 0.8s ease;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo::before {
+            content: "🚧";
+            font-size: 32px;
+        }
+
+        nav {
+            display: flex;
+            gap: 30px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        nav a:hover {
+            transform: translateY(-2px);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: width 0.3s;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            margin-top: 60px;
+            animation: fadeIn 1s ease;
+        }
+
+        .hero-content h1 {
+            font-size: 56px;
+            color: white;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            animation: slideRight 1s ease;
+        }
+
+        .hero-content p {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 40px;
+            line-height: 1.6;
+            animation: slideRight 1.2s ease;
+        }
+
+        .cta-button {
+            background: white;
+            color: #1e3a8a;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: slideRight 1.4s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .availability-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideLeft 1s ease;
+        }
+
+        .availability-card h2 {
+            color: #1e3a8a;
+            font-size: 28px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .availability-display {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .availability-number {
+            font-size: 72px;
+            font-weight: bold;
+            margin: 20px 0;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .availability-label {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .status-message {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .loading {
+            color: white;
+            font-style: italic;
+        }
+
+        .error {
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .success {
+            color: #51cf66;
+            background: rgba(81, 207, 102, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 100px;
+            animation: fadeIn 1.5s ease;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            color: #1e3a8a;
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideRight {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideLeft {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .hero-content h1 {
+                font-size: 36px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">EasyPark</div>
+            <nav>
+                <a href="#home">Início</a>
+                <a href="#sugestoes">Sugestões</a>
+                <a href="#login">Login</a>
+            </nav>
+        </header>
+
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Controlo Inteligente de Acessos</h1>
+                <p>Gere o estacionamento de forma automática e eficiente com tecnologia de ponta</p>
+                <button class="cta-button">Saber Mais</button>
+            </div>
+
+            <div class="availability-card">
+                <h2>Lugares Disponíveis</h2>
+
+                <div class="availability-display">
+                    <div class="availability-label">Disponíveis Agora</div>
+                    <div class="availability-number" id="availableSpots">--</div>
+                    <div class="availability-label">lugares livres</div>
+                </div>
+
+                <div class="status-message" id="statusMessage">
+                    <span class="loading">A carregar dados...</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Automação Total</h3>
+                <p>Sistema 100% automatizado com reconhecimento de matrículas e controlo inteligente</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Análise em Tempo Real</h3>
+                <p>Monitorize a ocupação e obtenha estatísticas detalhadas do seu estacionamento</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>Segurança Máxima</h3>
+                <p>Controlo de acessos com registo completo de entradas e saídas</p>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        async function fetchAvailableSpots() {
+            const statusMsg = document.getElementById('statusMessage');
+            
+            try {
+                // Mostrar que está a carregar
+                if (statusMsg) {
+                    statusMsg.innerHTML = '<span class="loading">A carregar dados...</span>';
+                }
+                
+                // Chamada à API PHP
+                const response = await fetch('api/get_disponibilidade.php');
+                
+                // Ler a resposta como texto primeiro para debug
+                const responseText = await response.text();
+                console.log('Resposta do servidor:', responseText);
+                
+                // Tentar converter para JSON
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                } catch (e) {
+                    throw new Error('Resposta inválida do servidor. Verifique o console do navegador.');
+                }
+                
+                if (data.success) {
+                    // Calcular lugares disponíveis
+                    const disponivel = data.lotacao_maxima - data.lotacao_atual;
+                    updateDisplay(disponivel, true);
+                    console.log('Dados carregados com sucesso:', data);
+                } else {
+                    throw new Error(data.error || 'Erro desconhecido');
+                }
+                
+            } catch (error) {
+                console.error('Erro completo:', error);
+                updateDisplay(0, false, error.message);
+            }
+        }
+
+        function updateDisplay(available, success, errorMessage = '') {
+            const display = document.getElementById('availableSpots');
+            const statusMsg = document.getElementById('statusMessage');
+            
+            display.style.animation = 'none';
+            setTimeout(() => {
+                display.textContent = available;
+                display.style.animation = 'pulse 2s ease-in-out infinite';
+            }, 10);
+            
+            if (statusMsg) {
+                if (success) {
+                    statusMsg.innerHTML = '<span class="success">✓ Dados atualizados</span>';
+                } else {
+                    statusMsg.innerHTML = `<span class="error">✗ ${errorMessage || 'Erro ao carregar dados'}</span>`;
+                }
+            }
+        }
+
+        // Atualizar ao carregar a página
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchAvailableSpots();
+            
+            // Atualizar automaticamente a cada 30 segundos
+            setInterval(fetchAvailableSpots, 30000);
+        });
+    </script>
+</body>
+</html>
