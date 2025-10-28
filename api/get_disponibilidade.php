@@ -6,19 +6,22 @@ header('Access-Control-Allow-Origin: *');
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+
 $host = "localhost";
 $utilizador = "root";
 $senha = "";
 $dbname = "easypark";
-$id_parque = 1;  
+$id_parque = 1;
 
 try {
-    // Conectar usando PDO (não mysqli!)
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $utilizador, $senha);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $conn = new mysqli($host, $utilizador, $senha, $dbname);
+    
+    if ($conn->connect_error) {
+        throw new Exception("Falha na conexão: " . $conn->connect_error);
+    }
     
     // Query para buscar os dados
-    $stmt = $pdo->prepare("
+    $stmt = $conn->prepare("
         SELECT 
             lotacao_maxima, 
             lotacao_atual,
@@ -28,8 +31,10 @@ try {
         LIMIT 1
     ");
     
-    $stmt->execute([$id_parque]);
-    $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt->bind_param("i", $id_parque);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $resultado = $result->fetch_assoc();
     
     if ($resultado) {
         // Sucesso - retornar os dados
@@ -40,7 +45,7 @@ try {
             'lotacao_atual' => (int)$resultado['lotacao_atual'],
             'ultima_atualizacao' => $resultado['ultima_atualizacao'],
             'disponivel' => (int)$resultado['lotacao_maxima'] - (int)$resultado['lotacao_atual']
-        ]);
+        ], JSON_UNESCAPED_UNICODE);
     } else {
         // Nenhum registro encontrado
         http_response_code(404);
@@ -49,25 +54,19 @@ try {
             'error' => 'Nenhum parque encontrado com ID ' . $id_parque,
             'lotacao_maxima' => 0,
             'lotacao_atual' => 0
-        ]);
+        ], JSON_UNESCAPED_UNICODE);
     }
     
-} catch (PDOException $e) {
+    $stmt->close();
+    $conn->close();
+    
+} catch (Exception $e) {
     // Erro na conexão ou query
     http_response_code(500);
     echo json_encode([
         'success' => false,
         'error' => 'Erro de base de dados',
-        'error_details' => $e->getMessage(),
-        'error_code' => $e->getCode()
-    ]);
-} catch (Exception $e) {
-    // Outros erros
-    http_response_code(500);
-    echo json_encode([
-        'success' => false,
-        'error' => 'Erro geral',
         'error_details' => $e->getMessage()
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
 }
 ?>
