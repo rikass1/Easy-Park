@@ -168,7 +168,7 @@
         }
 
         .loading {
-            color: white;
+            color: #1e3a8a;
             font-style: italic;
         }
 
@@ -181,11 +181,66 @@
         }
 
         .success {
-            color: #51cf66;
-            background: rgba(81, 207, 102, 0.2);
+            color: #1e3a8a;
+            background: rgba(30, 58, 138, 0.1);
             padding: 10px;
             border-radius: 8px;
             display: inline-block;
+        }
+
+        /* Filtros de Parques */
+        .parking-filters {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .filter-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .filter-card:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .filter-card.active {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: white;
+        }
+
+        .filter-card .icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .filter-card .name {
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .filter-card.active .name {
+            color: #1e3a8a;
+        }
+
+        .filter-card .count {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .filter-card.active .count {
+            color: #3b82f6;
         }
 
         .features {
@@ -287,7 +342,7 @@
                 font-size: 36px;
             }
 
-            .features {
+            .features, .parking-filters {
                 grid-template-columns: 1fr;
             }
 
@@ -321,11 +376,32 @@
                 <div class="availability-display">
                     <div class="availability-label">Disponíveis Agora</div>
                     <div class="availability-number" id="availableSpots">--</div>
-                    <div class="availability-label">lugares livres</div>
+                    <div class="availability-label" id="parkingName">todos os parques</div>
                 </div>
 
                 <div class="status-message" id="statusMessage">
                     <span class="loading">A carregar dados...</span>
+                </div>
+
+                <!-- Filtros de Parques -->
+                <div class="parking-filters">
+                    <div class="filter-card active" onclick="filterParking('all')">
+                        <div class="icon">🅿️</div>
+                        <div class="name">Todos</div>
+                        <div class="count" id="count-all">--</div>
+                    </div>
+                    
+                    <div class="filter-card" onclick="filterParking('north')">
+                        <div class="icon">🗺️</div>
+                        <div class="name">Parque Norte</div>
+                        <div class="count" id="count-north">--</div>
+                    </div>
+                    
+                    <div class="filter-card" onclick="filterParking('south')">
+                        <div class="icon">🗺️</div>
+                        <div class="name">Parque Sul</div>
+                        <div class="count" id="count-south">--</div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -352,23 +428,27 @@
     </div>
 
     <script>
+        let parkingData = {
+            all: 0,
+            north: 0,
+            south: 0
+        };
+
+        let currentFilter = 'all';
+
         async function fetchAvailableSpots() {
             const statusMsg = document.getElementById('statusMessage');
             
             try {
-                // Mostrar que está a carregar
                 if (statusMsg) {
                     statusMsg.innerHTML = '<span class="loading">A carregar dados...</span>';
                 }
                 
-                // Chamada à API PHP
+                // Buscar dados de todos os parques
                 const response = await fetch('api/get_disponibilidade.php');
-                
-                // Ler a resposta como texto primeiro para debug
                 const responseText = await response.text();
                 console.log('Resposta do servidor:', responseText);
                 
-                // Tentar converter para JSON
                 let data;
                 try {
                     data = JSON.parse(responseText);
@@ -377,9 +457,16 @@
                 }
                 
                 if (data.success) {
-                    // Calcular lugares disponíveis
+                    // Atualizar dados (aqui você pode ajustar para buscar múltiplos parques)
                     const disponivel = data.lotacao_maxima - data.lotacao_atual;
-                    updateDisplay(disponivel, true);
+                    
+                    // Simular dados para os diferentes parques
+                    // TODO: Modificar o PHP para retornar dados de todos os parques
+                    parkingData.all = disponivel;
+                    parkingData.north = Math.floor(disponivel * 0.6);
+                    parkingData.south = disponivel - parkingData.north;
+                    
+                    updateAllDisplays();
                     console.log('Dados carregados com sucesso:', data);
                 } else {
                     throw new Error(data.error || 'Erro desconhecido');
@@ -389,6 +476,16 @@
                 console.error('Erro completo:', error);
                 updateDisplay(0, false, error.message);
             }
+        }
+
+        function updateAllDisplays() {
+            // Atualizar contadores dos filtros
+            document.getElementById('count-all').textContent = parkingData.all;
+            document.getElementById('count-north').textContent = parkingData.north;
+            document.getElementById('count-south').textContent = parkingData.south;
+            
+            // Atualizar display principal
+            updateDisplay(parkingData[currentFilter], true);
         }
 
         function updateDisplay(available, success, errorMessage = '') {
@@ -410,6 +507,30 @@
             }
         }
 
+        function filterParking(type) {
+            currentFilter = type;
+            
+            // Remover classe active de todos
+            document.querySelectorAll('.filter-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            // Adicionar classe active ao clicado
+            event.currentTarget.classList.add('active');
+            
+            // Atualizar nome do parque
+            const parkingName = document.getElementById('parkingName');
+            const names = {
+                'all': 'todos os parques',
+                'north': 'Parque Norte',
+                'south': 'Parque Sul'
+            };
+            parkingName.textContent = names[type];
+            
+            // Atualizar display com o valor filtrado
+            updateDisplay(parkingData[type], true);
+        }
+
         // Atualizar ao carregar a página
         document.addEventListener('DOMContentLoaded', function() {
             fetchAvailableSpots();
@@ -419,4 +540,4 @@
         });
     </script>
 </body>
-</html>
+</html
