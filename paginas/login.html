@@ -97,7 +97,7 @@
     <div class="auth-card">
         
         <h1>Login Escolar</h1>
-        <form action="login.php" method="post">
+        <form action="../api/verifi_login.php" method="post">
             <label for="email">Email institucional</label>
             <input 
                 type="email" 
@@ -105,7 +105,7 @@
                 name="email" 
                 placeholder="numeroIps@estudantes.ips.pt" 
                 required
-                pattern="[0-9]+@estudantes\.ips\.pt"
+                pattern="([0-9]+@estudantes\.ips\.pt|admin@estudantes.ips.pt)"
                 title="Apenas emails do domínio estudantes.ips.pt são permitidos.">
             
             <label for="password">Palavra-passe</label>
