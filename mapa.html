@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyPark - Mapas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: white;
+        }
+
+          .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            animation: slideDown 0.8s ease;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo::before {
+            content: "🚧";
+            font-size: 32px;
+        }
+
+        nav {
+            display: flex;
+            gap: 30px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        nav a:hover {
+            transform: translateY(-2px);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: width 0.3s;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* CONTEÚDO CENTRAL */
+        main {
+         
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 42px;
+            font-weight: bold;
+            margin-top: 10px;
+            animation: fadeIn 1s ease;
+        }
+
+        .map-gallery {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            animation: slideUp 1s ease;
+        }
+
+.map-card {
+    margin-top: 15%;
+    background: rgba(255, 255, 255, 0.95);
+    border-top-left-radius: 20px;   /* canto superior esquerdo */
+    border-top-right-radius: 20px;  /* canto superior direito */
+    overflow: hidden;               /* garante que a imagem siga o arredondamento */
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    width: 320px;
+    transition: transform 0.3s;
+}
+
+.map-card img {
+    width: 100%;
+    display: block;
+    max-height: 200px;
+    object-fit: cover;
+}
+
+/* título dentro do card */
+.map-card h3 {
+    text-align: center;
+    color: #1e3a8a;
+    padding: 15px;
+    font-size: 18px;
+    background: rgba(255, 255, 255, 0.9);
+    margin: 0; /* remove espaçamento padrão */
+  
+   border-bottom-left-radius: 20px;
+
+}
+
+.map-card:hover {
+            transform: translateY(-8px);
+        }
+
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 1000px) {
+            header {
+                padding: 20px 40px;
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+
+            .map-card {
+                width: 280px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+         <div class="container">
+        <header>
+            <div class="logo">EasyPark</div>
+            <nav>
+                <a href="index.html">Início</a>
+                <a href="paginas/formulario.html">Sugestões</a>
+                <a href="paginas/login.html">Login</a>
+                <a href="mapa.html">Parques</a>
+            </nav>
+        </header>
+
+    </header>
+
+    <main>
+        <h1>Numeração dos parques</h1>
+
+        <div class="map-gallery">
+            <div class="map-card">
+                <img src="parque1.png" alt="Mapa 1">
+                <h3>Parque 1</h3>
+            </div>
+            <div class="map-card">
+                <img src="parque2.png" alt="Mapa 2">
+                <h3>Parque 2</h3>
+            </div>
+            <div class="map-card">
+                <img src="parque3.png" alt="Mapa 3">
+                <h3>Parque 3</h3>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
