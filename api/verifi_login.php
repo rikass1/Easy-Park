@@ -54,7 +54,7 @@ if ($result->num_rows === 1) {
         $_SESSION['email'] = $user['email'];
 
         // Redireciona conforme o tipo de utilizador
-        if ($user['tipo'] === 'Administrador') {
+        if ($user['tipo'] === 'Administrador') { 
             header("Location: ../paginas/dashboard.html");
         } else {
             header("Location: ../index.html");
